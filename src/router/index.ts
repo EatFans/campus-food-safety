@@ -1,0 +1,513 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import LoginView from '../views/LoginView.vue'
+import MainLayout from '../layout/MainLayout.vue'
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/dashboard',
+    component: MainLayout,
+    meta: { requiresAuth: true },
+    redirect: '/dashboard/overview',
+    children: [
+      // 数据总览
+      {
+        path: 'overview',
+        name: 'overview',
+        component: () => import('../views/dashboard/OverviewView.vue'),
+        meta: { requiresAuth: true, title: '数据总览' }
+      },
+      
+      // 通知中心
+      {
+        path: 'notification/message',
+        name: 'notification-message',
+        component: () => import('../views/dashboard/notification/MessageView.vue'),
+        meta: { requiresAuth: true, title: '消息通知' }
+      },
+      {
+        path: 'notification/announcement',
+        name: 'notification-announcement',
+        component: () => import('../views/dashboard/notification/AnnouncementView.vue'),
+        meta: { requiresAuth: true, title: '公告管理' }
+      },
+      {
+        path: 'notification/warning',
+        name: 'notification-warning',
+        component: () => import('../views/dashboard/notification/WarningView.vue'),
+        meta: { requiresAuth: true, title: '预警提醒' }
+      },
+
+      // 订单管理
+      {
+        path: 'order/list',
+        name: 'order-list',
+        component: () => import('../views/dashboard/order/OrderListView.vue'),
+        meta: { requiresAuth: true, title: '订单列表' }
+      },
+      {
+        path: 'order/pending',
+        name: 'order-pending',
+        component: () => import('../views/dashboard/order/PendingOrderView.vue'),
+        meta: { requiresAuth: true, title: '待处理订单' }
+      },
+      {
+        path: 'order/completed',
+        name: 'order-completed',
+        component: () => import('../views/dashboard/order/CompletedOrderView.vue'),
+        meta: { requiresAuth: true, title: '已完成订单' }
+      },
+      {
+        path: 'order/refund',
+        name: 'order-refund',
+        component: () => import('../views/dashboard/order/RefundManageView.vue'),
+        meta: { requiresAuth: true, title: '退款管理' }
+      },
+
+      // 菜品菜谱
+      {
+        path: 'dish/list',
+        name: 'dish-list',
+        component: () => import('../views/dashboard/dish/DishListView.vue'),
+        meta: { requiresAuth: true, title: '菜品列表' }
+      },
+      {
+        path: 'dish/category',
+        name: 'dish-category',
+        component: () => import('../views/dashboard/dish/DishCategoryView.vue'),
+        meta: { requiresAuth: true, title: '菜品分类' }
+      },
+      {
+        path: 'dish/recipe',
+        name: 'dish-recipe',
+        component: () => import('../views/dashboard/dish/RecipeManageView.vue'),
+        meta: { requiresAuth: true, title: '菜谱管理' }
+      },
+      {
+        path: 'dish/nutrition',
+        name: 'dish-nutrition',
+        component: () => import('../views/dashboard/dish/NutritionAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '营养分析' }
+      },
+
+      // 食品安全
+      {
+        path: 'food-safety/inspection',
+        name: 'food-safety-inspection',
+        component: () => import('../views/dashboard/food-safety/InspectionView.vue'),
+        meta: { requiresAuth: true, title: '安全检查' }
+      },
+      {
+        path: 'food-safety/traceability',
+        name: 'food-safety-traceability',
+        component: () => import('../views/dashboard/food-safety/IngredientTraceView.vue'),
+        meta: { requiresAuth: true, title: '食材溯源' }
+      },
+      {
+        path: 'food-safety/quality',
+        name: 'food-safety-quality',
+        component: () => import('../views/dashboard/food-safety/QualityTestView.vue'),
+        meta: { requiresAuth: true, title: '质量检测' }
+      },
+      {
+        path: 'food-safety/certificate',
+        name: 'food-safety-certificate',
+        component: () => import('../views/dashboard/food-safety/LicenseManageView.vue'),
+        meta: { requiresAuth: true, title: '证照管理' }
+      },
+
+      // 健康管理
+      {
+        path: 'health/employee',
+        name: 'health-employee',
+        component: () => import('../views/dashboard/health/HealthEmployeeView.vue'),
+        meta: { requiresAuth: true, title: '员工健康' }
+      },
+      {
+        path: 'health/check',
+        name: 'health-check',
+        component: () => import('../views/dashboard/health/HealthCheckView.vue'),
+        meta: { requiresAuth: true, title: '健康检查' }
+      },
+      {
+        path: 'health/record',
+        name: 'health-record',
+        component: () => import('../views/dashboard/health/HealthRecordView.vue'),
+        meta: { requiresAuth: true, title: '健康档案' }
+      },
+
+      // 商超管理
+      {
+        path: 'supermarket/goods',
+        name: 'supermarket-goods',
+        component: () => import('../views/dashboard/supermarket/GoodsManageView.vue'),
+        meta: { requiresAuth: true, title: '商品管理' }
+      },
+      {
+        path: 'supermarket/inventory',
+        name: 'supermarket-inventory',
+        component: () => import('../views/dashboard/supermarket/InventoryManageView.vue'),
+        meta: { requiresAuth: true, title: '库存管理' }
+      },
+      {
+        path: 'supermarket/supplier',
+        name: 'supermarket-supplier',
+        component: () => import('../views/dashboard/supermarket/SupplierManageView.vue'),
+        meta: { requiresAuth: true, title: '供应商管理' }
+      },
+      {
+        path: 'supermarket/purchase',
+        name: 'supermarket-purchase',
+        component: () => import('../views/dashboard/supermarket/PurchaseManageView.vue'),
+        meta: { requiresAuth: true, title: '采购管理' }
+      },
+
+      // 营销中心
+      {
+        path: 'marketing/activity',
+        name: 'marketing-activity',
+        component: () => import('../views/dashboard/marketing/ActivityManageView.vue'),
+        meta: { requiresAuth: true, title: '营销活动' }
+      },
+      {
+        path: 'marketing/coupon',
+        name: 'marketing-coupon',
+        component: () => import('../views/dashboard/marketing/CouponManageView.vue'),
+        meta: { requiresAuth: true, title: '优惠券管理' }
+      },
+      {
+        path: 'marketing/member',
+        name: 'marketing-member',
+        component: () => import('../views/dashboard/marketing/MemberManageView.vue'),
+        meta: { requiresAuth: true, title: '会员管理' }
+      },
+      {
+        path: 'marketing/points',
+        name: 'marketing-points',
+        component: () => import('../views/dashboard/marketing/PointsManageView.vue'),
+        meta: { requiresAuth: true, title: '积分管理' }
+      },
+
+      // 员工管理
+      {
+        path: 'employee/list',
+        name: 'employee-list',
+        component: () => import('../views/dashboard/employee/EmployeeListView.vue'),
+        meta: { requiresAuth: true, title: '员工列表' }
+      },
+      {
+        path: 'employee/department',
+        name: 'employee-department',
+        component: () => import('../views/dashboard/employee/DepartmentManageView.vue'),
+        meta: { requiresAuth: true, title: '部门管理' }
+      },
+      {
+        path: 'employee/position',
+        name: 'employee-position',
+        component: () => import('../views/dashboard/employee/PositionManageView.vue'),
+        meta: { requiresAuth: true, title: '岗位管理' }
+      },
+      {
+        path: 'employee/training',
+        name: 'employee-training',
+        component: () => import('../views/dashboard/employee/TrainingManageView.vue'),
+        meta: { requiresAuth: true, title: '培训管理' }
+      },
+
+      // 考勤管理
+      {
+        path: 'attendance/record',
+        name: 'attendance-record',
+        component: () => import('../views/dashboard/attendance/RecordManageView.vue'),
+        meta: { requiresAuth: true, title: '考勤记录' }
+      },
+      {
+        path: 'attendance/leave',
+        name: 'attendance-leave',
+        component: () => import('../views/dashboard/attendance/LeaveManageView.vue'),
+        meta: { requiresAuth: true, title: '请假管理' }
+      },
+      {
+        path: 'attendance/overtime',
+        name: 'attendance-overtime',
+        component: () => import('../views/dashboard/attendance/OvertimeManageView.vue'),
+        meta: { requiresAuth: true, title: '加班管理' }
+      },
+      {
+        path: 'attendance/schedule',
+        name: 'attendance-schedule',
+        component: () => import('../views/dashboard/attendance/ScheduleManageView.vue'),
+        meta: { requiresAuth: true, title: '排班管理' }
+      },
+
+      // 审批中心
+      {
+        path: 'approval/pending',
+        name: 'approval-pending',
+        component: () => import('../views/dashboard/approval/PendingApprovalView.vue'),
+        meta: { requiresAuth: true, title: '待审批' }
+      },
+      {
+        path: 'approval/approved',
+        name: 'approval-approved',
+        component: () => import('../views/dashboard/approval/ApprovedView.vue'),
+        meta: { requiresAuth: true, title: '已审批' }
+      },
+      {
+        path: 'approval/initiated',
+        name: 'approval-initiated',
+        component: () => import('../views/dashboard/approval/MyInitiatedView.vue'),
+        meta: { requiresAuth: true, title: '我发起的' }
+      },
+      {
+        path: 'approval/flow',
+        name: 'approval-flow',
+        component: () => import('../views/dashboard/approval/WorkflowView.vue'),
+        meta: { requiresAuth: true, title: '审批流程' }
+      },
+
+      // 设备管理
+      {
+        path: 'device/list',
+        name: 'device-list',
+        component: () => import('../views/dashboard/device/ListManageView.vue'),
+        meta: { requiresAuth: true, title: '设备列表' }
+      },
+      {
+        path: 'device/monitor',
+        name: 'device-monitor',
+        component: () => import('../views/dashboard/device/MonitorView.vue'),
+        meta: { requiresAuth: true, title: '设备监控' }
+      },
+      {
+        path: 'device/maintenance',
+        name: 'device-maintenance',
+        component: () => import('../views/dashboard/device/MaintenanceView.vue'),
+        meta: { requiresAuth: true, title: '维护保养' }
+      },
+      {
+        path: 'device/repair',
+        name: 'device-repair',
+        component: () => import('../views/dashboard/device/RepairView.vue'),
+        meta: { requiresAuth: true, title: '维修记录' }
+      },
+
+      // 能源管理
+      {
+        path: 'energy/consumption',
+        name: 'energy-consumption',
+        component: () => import('../views/dashboard/energy/ConsumptionView.vue'),
+        meta: { requiresAuth: true, title: '能耗统计' }
+      },
+      {
+        path: 'energy/water',
+        name: 'energy-water',
+        component: () => import('../views/dashboard/energy/WaterView.vue'),
+        meta: { requiresAuth: true, title: '用水管理' }
+      },
+      {
+        path: 'energy/electricity',
+        name: 'energy-electricity',
+        component: () => import('../views/dashboard/energy/ElectricityView.vue'),
+        meta: { requiresAuth: true, title: '用电管理' }
+      },
+      {
+        path: 'energy/gas',
+        name: 'energy-gas',
+        component: () => import('../views/dashboard/energy/GasView.vue'),
+        meta: { requiresAuth: true, title: '燃气管理' }
+      },
+
+      // 安全管理
+      {
+        path: 'security/video',
+        name: 'security-video',
+        component: () => import('../views/dashboard/security/VideoView.vue'),
+        meta: { requiresAuth: true, title: '视频监控' }
+      },
+      {
+        path: 'security/access',
+        name: 'security-access',
+        component: () => import('../views/dashboard/security/AccessView.vue'),
+        meta: { requiresAuth: true, title: '门禁管理' }
+      },
+      {
+        path: 'security/fire',
+        name: 'security-fire',
+        component: () => import('../views/dashboard/security/FireView.vue'),
+        meta: { requiresAuth: true, title: '消防管理' }
+      },
+      {
+        path: 'security/emergency',
+        name: 'security-emergency',
+        component: () => import('../views/dashboard/security/EmergencyView.vue'),
+        meta: { requiresAuth: true, title: '应急预案' }
+      },
+
+      // 报表中心
+      {
+        path: 'report/sales',
+        name: 'report-sales',
+        component: () => import('../views/dashboard/report/SalesView.vue'),
+        meta: { requiresAuth: true, title: '销售报表' }
+      },
+      {
+        path: 'report/financial',
+        name: 'report-financial',
+        component: () => import('../views/dashboard/report/FinanceView.vue'),
+        meta: { requiresAuth: true, title: '财务报表' }
+      },
+      {
+        path: 'report/operation',
+        name: 'report-operation',
+        component: () => import('../views/dashboard/report/OperationView.vue'),
+        meta: { requiresAuth: true, title: '运营报表' }
+      },
+      {
+        path: 'report/custom',
+        name: 'report-custom',
+        component: () => import('../views/dashboard/report/CustomView.vue'),
+        meta: { requiresAuth: true, title: '自定义报表' }
+      },
+
+      // 账户管理
+      {
+        path: 'account/profile',
+        name: 'account-profile',
+        component: () => import('../views/dashboard/account/ProfileView.vue'),
+        meta: { requiresAuth: true, title: '个人信息' }
+      },
+      {
+        path: 'account/security',
+        name: 'account-security',
+        component: () => import('../views/dashboard/account/SecurityView.vue'),
+        meta: { requiresAuth: true, title: '安全设置' }
+      },
+      {
+        path: 'account/notification',
+        name: 'account-notification',
+        component: () => import('../views/dashboard/account/NotificationView.vue'),
+        meta: { requiresAuth: true, title: '通知设置' }
+      },
+
+      // 系统管理
+      {
+        path: 'system/user',
+        name: 'system-user',
+        component: () => import('../views/dashboard/system/UserView.vue'),
+        meta: { requiresAuth: true, title: '用户管理' }
+      },
+      {
+        path: 'system/role',
+        name: 'system-role',
+        component: () => import('../views/dashboard/system/RoleView.vue'),
+        meta: { requiresAuth: true, title: '角色管理' }
+      },
+      {
+        path: 'system/permission',
+        name: 'system-permission',
+        component: () => import('../views/dashboard/system/PermissionView.vue'),
+        meta: { requiresAuth: true, title: '权限管理' }
+      },
+      {
+        path: 'system/menu',
+        name: 'system-menu',
+        component: () => import('../views/dashboard/system/MenuView.vue'),
+        meta: { requiresAuth: true, title: '菜单管理' }
+      },
+      {
+        path: 'system/log',
+        name: 'system-log',
+        component: () => import('../views/dashboard/system/LogView.vue'),
+        meta: { requiresAuth: true, title: '操作日志' }
+      },
+      {
+        path: 'system/dict',
+        name: 'system-dict',
+        component: () => import('../views/dashboard/system/DictView.vue'),
+        meta: { requiresAuth: true, title: '数据字典' }
+      },
+
+      // 基础设置
+      {
+        path: 'settings/basic',
+        name: 'settings-basic',
+        component: () => import('../views/dashboard/settings/BasicView.vue'),
+        meta: { requiresAuth: true, title: '基本设置' }
+      },
+      {
+        path: 'settings/parameter',
+        name: 'settings-parameter',
+        component: () => import('../views/dashboard/settings/ParameterView.vue'),
+        meta: { requiresAuth: true, title: '参数配置' }
+      },
+      {
+        path: 'settings/template',
+        name: 'settings-template',
+        component: () => import('../views/dashboard/settings/TemplateView.vue'),
+        meta: { requiresAuth: true, title: '模板管理' }
+      },
+      {
+        path: 'settings/backup',
+        name: 'settings-backup',
+        component: () => import('../views/dashboard/settings/BackupView.vue'),
+        meta: { requiresAuth: true, title: '备份恢复' }
+      },
+
+      // 保留旧路由以兼容
+      {
+        path: 'workplace',
+        name: 'workplace',
+        component: () => import('../views/dashboard/WorkplaceView.vue'),
+        meta: { requiresAuth: true, title: '工作台' }
+      }
+    ]
+  },
+  {
+    path: '/',
+    redirect: '/dashboard/overview'
+  },
+  // 404 页面
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/dashboard/workplace'
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+})
+
+// 路由守护 - 检查登录状态
+router.beforeEach((to, from, next) => {
+  // 获取本地存储的登录状态
+  const isLogin = localStorage.getItem('isLogin') === 'true'
+  
+  // 如果目标路由需要认证
+  if (to.meta.requiresAuth) {
+    if (isLogin) {
+      // 已登录,允许访问
+      next()
+    } else {
+      // 未登录,重定向到登录页
+      next('/login')
+    }
+  } else {
+    // 不需要认证的路由
+    if (to.path === '/login' && isLogin) {
+      // 如果已登录且访问登录页,重定向到后台首页
+      next('/dashboard/workplace')
+    } else {
+      next()
+    }
+  }
+})
+
+export default router

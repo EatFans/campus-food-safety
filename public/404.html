@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食品安全监管系统</title>
+  <script>
+    // GitHub Pages SPA 路由重定向解决方案
+    // 将当前路径保存到sessionStorage，然后重定向到index.html
+    sessionStorage.setItem('redirect', location.pathname + location.search + location.hash);
+    location.replace(location.origin + location.pathname.split('/').slice(0, -1).join('/') + '/');
+  </script>
+</head>
+<body>
+  <div style="text-align: center; padding: 50px;">
+    <h2>页面跳转中...</h2>
+  </div>
+</body>
+</html>
