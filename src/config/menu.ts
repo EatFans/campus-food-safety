@@ -114,12 +114,12 @@ export const menuConfig: MenuItem[] = [
         icon: 'mdi:clipboard-text-search-outline'
       },
       {
-        path: '/dashboard/process/spot-check',
+        path: '/dashboard/process/spotcheck',
         title: '抽检记录',
         icon: 'mdi:clipboard-list-outline'
       },
       {
-        path: '/dashboard/process/quick-test',
+        path: '/dashboard/process/quicktest',
         title: '快检记录',
         icon: 'mdi:speedometer'
       }
