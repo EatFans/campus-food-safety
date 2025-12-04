@@ -220,10 +220,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: '供应量对比分析' }
       },
       {
-        path: 'big-data/food-safety-analysis',
-        name: 'big-data-food-safety-analysis',
+        path: 'big-data/risk-analysis',
+        name: 'big-data-risk-analysis',
         component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/FoodSafetyAnalysisView.vue'),
-        meta: { requiresAuth: true, title: '食品安全分析' }
+        meta: { requiresAuth: true, title: '食品安全风险分析' }
       },
 
       // 通知中心
