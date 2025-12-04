@@ -66,10 +66,7 @@
             </div>
           </template>
           <div class="chart-container" style="height: 400px;">
-            <div class="chart-placeholder">
-              <el-icon :size="56" color="#909399"><Histogram /></el-icon>
-              <p>供应量对比图表 (集成 ECharts)</p>
-            </div>
+            <v-chart :option="comparisonChartOption" autoresize />
           </div>
         </el-card>
       </el-col>
@@ -340,7 +337,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { LineChart, BarChart, RadarChart } from 'echarts/charts'
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  RadarComponent
+} from 'echarts/components'
+import VChart from 'vue-echarts'
 import {
   DataBoard,
   Download,
@@ -355,6 +363,18 @@ import {
   Opportunity,
   Warning
 } from '@element-plus/icons-vue'
+
+use([
+  CanvasRenderer,
+  LineChart,
+  BarChart,
+  RadarChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  RadarComponent
+])
 
 // 对比维度
 const comparisonDimension = ref('supplier')
@@ -542,6 +562,143 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   pagination.currentPage = val
 }
+
+// 对比图表配置
+const comparisonChartOption = computed(() => {
+  if (chartMode.value === 'radar') {
+    return {
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        data: ['鲜美蔬菜供应商', '优质肉类批发', '粮油食品公司'],
+        top: 10
+      },
+      radar: {
+        indicator: [
+          { name: '供应量', max: 1500 },
+          { name: '质量评分', max: 100 },
+          { name: '价格指数', max: 120 },
+          { name: '准时率', max: 100 },
+          { name: '市场占比', max: 30 }
+        ]
+      },
+      series: [
+        {
+          type: 'radar',
+          data: [
+            {
+              value: [1256, 96, 102, 98, 28],
+              name: '鲜美蔬菜供应商',
+              itemStyle: { color: '#409EFF' }
+            },
+            {
+              value: [1089, 93, 105, 95, 24],
+              name: '优质肉类批发',
+              itemStyle: { color: '#67C23A' }
+            },
+            {
+              value: [956, 94, 98, 97, 21],
+              name: '粮油食品公司',
+              itemStyle: { color: '#E6A23C' }
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  const baseConfig = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {
+      data: ['鲜美蔬菜供应商', '优质肉类批发', '粮油食品公司'],
+      top: 10
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+    },
+    yAxis: {
+      type: 'value',
+      name: '供应量(吨)'
+    },
+    series: [
+      {
+        name: '鲜美蔬菜供应商',
+        type: chartMode.value === 'bar' ? 'bar' : 'line',
+        data: [980, 1050, 1120, 1080, 1180, 1150, 1250, 1200, 1160, 1280, 1220, 1320],
+        smooth: true,
+        itemStyle: { color: '#409EFF' },
+        areaStyle: chartMode.value === 'line' ? {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(64, 158, 255, 0.3)' },
+              { offset: 1, color: 'rgba(64, 158, 255, 0.05)' }
+            ]
+          }
+        } : undefined
+      },
+      {
+        name: '优质肉类批发',
+        type: chartMode.value === 'bar' ? 'bar' : 'line',
+        data: [850, 920, 980, 950, 1050, 1020, 1120, 1080, 1040, 1150, 1100, 1180],
+        smooth: true,
+        itemStyle: { color: '#67C23A' },
+        areaStyle: chartMode.value === 'line' ? {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(103, 194, 58, 0.3)' },
+              { offset: 1, color: 'rgba(103, 194, 58, 0.05)' }
+            ]
+          }
+        } : undefined
+      },
+      {
+        name: '粮油食品公司',
+        type: chartMode.value === 'bar' ? 'bar' : 'line',
+        data: [720, 780, 850, 820, 920, 890, 980, 950, 910, 1020, 980, 1050],
+        smooth: true,
+        itemStyle: { color: '#E6A23C' },
+        areaStyle: chartMode.value === 'line' ? {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(230, 162, 60, 0.3)' },
+              { offset: 1, color: 'rgba(230, 162, 60, 0.05)' }
+            ]
+          }
+        } : undefined
+      }
+    ]
+  }
+
+  return baseConfig
+})
 </script>
 
 <style scoped>

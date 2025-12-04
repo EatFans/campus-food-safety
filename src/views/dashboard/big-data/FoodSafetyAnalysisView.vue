@@ -84,10 +84,7 @@
             </div>
           </template>
           <div class="chart-wrapper" style="height: 320px;">
-            <div class="chart-placeholder">
-              <el-icon :size="48" color="#909399"><DataLine /></el-icon>
-              <p>风险趋势图表 (集成 ECharts)</p>
-            </div>
+            <v-chart :option="riskTrendOption" autoresize />
           </div>
         </el-card>
       </el-col>
@@ -155,10 +152,7 @@
             </div>
           </div>
           <div class="chart-wrapper" style="height: 200px; margin-top: 20px;">
-            <div class="chart-placeholder">
-              <el-icon :size="40" color="#909399"><PieChart /></el-icon>
-              <p style="font-size: 12px;">检测结果分布图</p>
-            </div>
+            <v-chart :option="testResultPieOption" autoresize />
           </div>
         </el-card>
       </el-col>
@@ -312,7 +306,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, markRaw } from 'vue'
+import { ref, reactive, markRaw, computed } from 'vue'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { LineChart, PieChart as EChartsPie } from 'echarts/charts'
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+} from 'echarts/components'
+import VChart from 'vue-echarts'
 import {
   WarnTriangleFilled,
   Document,
@@ -328,6 +332,16 @@ import {
   Close,
   Warning
 } from '@element-plus/icons-vue'
+
+use([
+  CanvasRenderer,
+  LineChart,
+  EChartsPie,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+])
 
 // 安全指数
 const safetyScore = ref(87)
@@ -574,6 +588,138 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   pagination.currentPage = val
 }
+
+// 风险趋势图配置
+const riskTrendOption = computed(() => ({
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross'
+    }
+  },
+  legend: {
+    data: ['高风险', '中风险', '低风险'],
+    top: 10
+  },
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+  },
+  yAxis: {
+    type: 'value',
+    name: '风险数量'
+  },
+  series: [
+    {
+      name: '高风险',
+      type: 'line',
+      data: [5, 4, 6, 3, 4, 2, 3, 2, 4, 3, 2, 3],
+      smooth: true,
+      itemStyle: {
+        color: '#F56C6C'
+      },
+      areaStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(245, 108, 108, 0.3)' },
+            { offset: 1, color: 'rgba(245, 108, 108, 0.05)' }
+          ]
+        }
+      }
+    },
+    {
+      name: '中风险',
+      type: 'line',
+      data: [12, 10, 14, 11, 13, 9, 11, 8, 10, 9, 7, 8],
+      smooth: true,
+      itemStyle: {
+        color: '#E6A23C'
+      },
+      areaStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(230, 162, 60, 0.3)' },
+            { offset: 1, color: 'rgba(230, 162, 60, 0.05)' }
+          ]
+        }
+      }
+    },
+    {
+      name: '低风险',
+      type: 'line',
+      data: [15, 13, 16, 14, 15, 12, 14, 11, 13, 12, 10, 9],
+      smooth: true,
+      itemStyle: {
+        color: '#409EFF'
+      },
+      areaStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(64, 158, 255, 0.3)' },
+            { offset: 1, color: 'rgba(64, 158, 255, 0.05)' }
+          ]
+        }
+      }
+    }
+  ]
+}))
+
+// 检测结果饼图配置
+const testResultPieOption = computed(() => ({
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b}: {c} ({d}%)'
+  },
+  legend: {
+    orient: 'vertical',
+    right: 10,
+    top: 'center'
+  },
+  series: [
+    {
+      name: '检测结果',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['40%', '50%'],
+      data: [
+        { value: testStats.passed, name: '合格', itemStyle: { color: '#67C23A' } },
+        { value: testStats.failed, name: '不合格', itemStyle: { color: '#F56C6C' } }
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      },
+      label: {
+        formatter: '{b}: {d}%'
+      }
+    }
+  ]
+}))
 </script>
 
 <style scoped>
