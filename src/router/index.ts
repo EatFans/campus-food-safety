@@ -23,6 +23,36 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/dashboard/OverviewView.vue'),
         meta: { requiresAuth: true, title: '数据总览' }
       },
+
+      // ==================== 校园食品安全管理系统 ====================
+      
+      // 基本档案系统
+      {
+        path: 'archives/school',
+        name: 'archives-school',
+        component: () => import('../views/dashboard/archives/SchoolInfoView.vue'),
+        meta: { requiresAuth: true, title: '学校基本信息' }
+      },
+      {
+        path: 'archives/canteen',
+        name: 'archives-canteen',
+        component: () => import('../views/dashboard/archives/CanteenInfoView.vue'),
+        meta: { requiresAuth: true, title: '食堂基本信息' }
+      },
+      {
+        path: 'archives/staff',
+        name: 'archives-staff',
+        component: () => import('../views/dashboard/archives/StaffInfoView.vue'),
+        meta: { requiresAuth: true, title: '从业人员信息' }
+      },
+      {
+        path: 'archives/merchant',
+        name: 'archives-merchant',
+        component: () => import('../views/dashboard/archives/MerchantInfoView.vue'),
+        meta: { requiresAuth: true, title: '商家档案管理' }
+      },
+
+      // ==================== 原有系统功能 ====================
       
       // 通知中心
       {
