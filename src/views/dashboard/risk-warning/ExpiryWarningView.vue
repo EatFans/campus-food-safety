@@ -539,12 +539,18 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #EBEEF5;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
 .page-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
+  color: #303133;
 }
 
 .overview-cards {
@@ -552,11 +558,13 @@ onMounted(() => {
 }
 
 .overview-card {
-  transition: transform 0.2s;
+  transition: all 0.3s;
+  border-radius: 12px;
 }
 
 .overview-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-content {
@@ -604,10 +612,12 @@ onMounted(() => {
 
 .filter-card {
   margin-bottom: 16px;
+  border-radius: 12px;
 }
 
 .table-card {
   margin-bottom: 16px;
+  border-radius: 12px;
 }
 
 .expand-detail {
