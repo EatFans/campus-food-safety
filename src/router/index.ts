@@ -200,7 +200,32 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: '数据质量分析' }
       },
 
-      
+      // 大数据分析中心
+      {
+        path: 'big-data/inventory-analysis',
+        name: 'big-data-inventory-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/InventoryAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '出入库分析' }
+      },
+      {
+        path: 'big-data/purchase-analysis',
+        name: 'big-data-purchase-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/PurchaseAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '采购分析' }
+      },
+      {
+        path: 'big-data/supply-comparison',
+        name: 'big-data-supply-comparison',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/SupplyComparisonView.vue'),
+        meta: { requiresAuth: true, title: '供应量对比分析' }
+      },
+      {
+        path: 'big-data/food-safety-analysis',
+        name: 'big-data-food-safety-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/FoodSafetyAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '食品安全分析' }
+      },
+
       // 通知中心
       {
         path: 'notification/message',
