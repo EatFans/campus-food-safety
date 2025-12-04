@@ -23,7 +23,209 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/dashboard/OverviewView.vue'),
         meta: { requiresAuth: true, title: '数据总览' }
       },
+
+      // ==================== 校园食品安全管理系统 ====================
       
+      // 基本档案系统
+      {
+        path: 'archives/school',
+        name: 'archives-school',
+        component: () => import('../views/dashboard/archives/SchoolInfoView.vue'),
+        meta: { requiresAuth: true, title: '学校基本信息' }
+      },
+      {
+        path: 'archives/canteen',
+        name: 'archives-canteen',
+        component: () => import('../views/dashboard/archives/CanteenInfoView.vue'),
+        meta: { requiresAuth: true, title: '食堂基本信息' }
+      },
+      {
+        path: 'archives/staff',
+        name: 'archives-staff',
+        component: () => import('../views/dashboard/archives/StaffInfoView.vue'),
+        meta: { requiresAuth: true, title: '从业人员信息' }
+      },
+      {
+        path: 'archives/merchant',
+        name: 'archives-merchant',
+        component: () => import('../views/dashboard/archives/MerchantInfoView.vue'),
+        meta: { requiresAuth: true, title: '商家档案管理' }
+      },
+
+      // 溯源采购系统
+      {
+        path: 'traceability/production',
+        name: 'traceability-production',
+        component: () => import('../views/dashboard/traceability/ProductionView.vue'),
+        meta: { requiresAuth: true, title: '生产环节信息' }
+      },
+      {
+        path: 'traceability/storage',
+        name: 'traceability-storage',
+        component: () => import('../views/dashboard/traceability/StorageView.vue'),
+        meta: { requiresAuth: true, title: '仓储环节信息' }
+      },
+      {
+        path: 'traceability/processing',
+        name: 'traceability-processing',
+        component: () => import('../views/dashboard/traceability/ProcessingView.vue'),
+        meta: { requiresAuth: true, title: '加工环节信息' }
+      },
+      {
+        path: 'traceability/logistics',
+        name: 'traceability-logistics',
+        component: () => import('../views/dashboard/traceability/LogisticsView.vue'),
+        meta: { requiresAuth: true, title: '物流环节信息' }
+      },
+      {
+        path: 'traceability/distribution',
+        name: 'traceability-distribution',
+        component: () => import('../views/dashboard/traceability/DistributionView.vue'),
+        meta: { requiresAuth: true, title: '分销环节信息' }
+      },
+      {
+        path: 'traceability/sales',
+        name: 'traceability-sales',
+        component: () => import('../views/dashboard/traceability/SalesView.vue'),
+        meta: { requiresAuth: true, title: '销售环节信息' }
+      },
+      {
+        path: 'traceability/qrcode',
+        name: 'traceability-qrcode',
+        component: () => import('../views/dashboard/traceability/QRCodeView.vue'),
+        meta: { requiresAuth: true, title: '二维码管理' }
+      },
+
+      // 过程管理系统
+      {
+        path: 'process/sample',
+        name: 'process-sample',
+        component: () => import('../views/dashboard/process/SampleView.vue'),
+        meta: { requiresAuth: true, title: '留样记录' }
+      },
+      {
+        path: 'process/waste',
+        name: 'process-waste',
+        component: () => import('../views/dashboard/process/WasteView.vue'),
+        meta: { requiresAuth: true, title: '餐厨垃圾处理' }
+      },
+      {
+        path: 'process/inspection',
+        name: 'process-inspection',
+        component: () => import('../views/dashboard/process/InspectionView.vue'),
+        meta: { requiresAuth: true, title: '日常监督检查' }
+      },
+      {
+        path: 'process/spotcheck',
+        name: 'process-spotcheck',
+        component: () => import('../views/dashboard/process/SpotCheckView.vue'),
+        meta: { requiresAuth: true, title: '抽检记录' }
+      },
+      {
+        path: 'process/quicktest',
+        name: 'process-quicktest',
+        component: () => import('../views/dashboard/process/QuickTestView.vue'),
+        meta: { requiresAuth: true, title: '快检记录' }
+      },
+
+      // 明厨亮灶系统
+      {
+        path: 'kitchen-monitor/video-archive',
+        name: 'kitchen-monitor-video-archive',
+        component: () => import('../views/dashboard/kitchen-monitor/VideoArchiveView.vue'),
+        meta: { requiresAuth: true, title: '影像留痕' }
+      },
+      {
+        path: 'kitchen-monitor/video-patrol',
+        name: 'kitchen-monitor-video-patrol',
+        component: () => import('../views/dashboard/kitchen-monitor/VideoPatrolView.vue'),
+        meta: { requiresAuth: true, title: '视频巡检' }
+      },
+      {
+        path: 'kitchen-monitor/ai-analysis',
+        name: 'kitchen-monitor-ai-analysis',
+        component: () => import('../views/dashboard/kitchen-monitor/AIAnalysisView.vue'),
+        meta: { requiresAuth: true, title: 'AI智能分析' }
+      },
+
+      // 风险预警系统
+      {
+        path: 'risk-warning/test-fail',
+        name: 'risk-warning-test-fail',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/TestFailWarningView.vue'),
+        meta: { requiresAuth: true, title: '快检不合格预警' }
+      },
+      {
+        path: 'risk-warning/expiry',
+        name: 'risk-warning-expiry',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/ExpiryWarningView.vue'),
+        meta: { requiresAuth: true, title: '过期预警' }
+      },
+      {
+        path: 'risk-warning/abnormal',
+        name: 'risk-warning-abnormal',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/AbnormalReminderView.vue'),
+        meta: { requiresAuth: true, title: '异常提醒' }
+      },
+      {
+        path: 'risk-warning/level',
+        name: 'risk-warning-level',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/WarningLevelManageView.vue'),
+        meta: { requiresAuth: true, title: '预警级别管理' }
+      },
+
+      // 食品安全报表中心
+      {
+        path: 'food-report/inventory',
+        name: 'food-report-inventory',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/InventoryReportView.vue'),
+        meta: { requiresAuth: true, title: '出入库报表' }
+      },
+      {
+        path: 'food-report/process',
+        name: 'food-report-process',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/ProcessReportView.vue'),
+        meta: { requiresAuth: true, title: '过程管理报表' }
+      },
+      {
+        path: 'food-report/operation',
+        name: 'food-report-operation',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/OperationReportView.vue'),
+        meta: { requiresAuth: true, title: '运维报表' }
+      },
+      {
+        path: 'food-report/data-quality',
+        name: 'food-report-data-quality',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/DataQualityView.vue'),
+        meta: { requiresAuth: true, title: '数据质量分析' }
+      },
+
+      // 大数据分析中心
+      {
+        path: 'big-data/inventory-analysis',
+        name: 'big-data-inventory-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/InventoryAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '出入库分析' }
+      },
+      {
+        path: 'big-data/purchase-analysis',
+        name: 'big-data-purchase-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/PurchaseAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '采购分析' }
+      },
+      {
+        path: 'big-data/supply-comparison',
+        name: 'big-data-supply-comparison',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/SupplyComparisonView.vue'),
+        meta: { requiresAuth: true, title: '供应量对比分析' }
+      },
+      {
+        path: 'big-data/risk-analysis',
+        name: 'big-data-risk-analysis',
+        component: () => import(/* webpackChunkName: "big-data" */ '../views/dashboard/big-data/FoodSafetyAnalysisView.vue'),
+        meta: { requiresAuth: true, title: '食品安全风险分析' }
+      },
+
       // 通知中心
       {
         path: 'notification/message',

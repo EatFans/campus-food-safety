@@ -16,6 +16,228 @@ export const menuConfig: MenuItem[] = [
     icon: 'mdi:view-dashboard-outline',
     hot: true
   },
+
+  // ==================== 校园食品安全管理系统 ====================
+  
+  // 基本档案系统
+  {
+    path: '/dashboard/archives',
+    title: '基本档案系统',
+    icon: 'mdi:folder-account-outline',
+    children: [
+      {
+        path: '/dashboard/archives/school',
+        title: '学校基本信息',
+        icon: 'mdi:school-outline'
+      },
+      {
+        path: '/dashboard/archives/canteen',
+        title: '食堂基本信息',
+        icon: 'mdi:store-outline'
+      },
+      {
+        path: '/dashboard/archives/staff',
+        title: '从业人员信息',
+        icon: 'mdi:account-group-outline'
+      },
+      {
+        path: '/dashboard/archives/merchant',
+        title: '商家档案管理',
+        icon: 'mdi:briefcase-account-outline'
+      }
+    ]
+  },
+
+  // 溯源采购系统
+  {
+    path: '/dashboard/traceability',
+    title: '溯源采购系统',
+    icon: 'mdi:map-marker-path',
+    children: [
+      {
+        path: '/dashboard/traceability/production',
+        title: '生产环节信息',
+        icon: 'mdi:factory'
+      },
+      {
+        path: '/dashboard/traceability/storage',
+        title: '仓储环节信息',
+        icon: 'mdi:warehouse'
+      },
+      {
+        path: '/dashboard/traceability/processing',
+        title: '加工环节信息',
+        icon: 'mdi:chef-hat'
+      },
+      {
+        path: '/dashboard/traceability/logistics',
+        title: '物流环节信息',
+        icon: 'mdi:truck-delivery-outline'
+      },
+      {
+        path: '/dashboard/traceability/distribution',
+        title: '分销环节信息',
+        icon: 'mdi:share-variant-outline'
+      },
+      {
+        path: '/dashboard/traceability/sales',
+        title: '销售环节信息',
+        icon: 'mdi:cash-register'
+      },
+      {
+        path: '/dashboard/traceability/qrcode',
+        title: '二维码管理',
+        icon: 'mdi:qrcode'
+      }
+    ]
+  },
+
+  // 过程管理系统
+  {
+    path: '/dashboard/process',
+    title: '过程管理系统',
+    icon: 'mdi:clipboard-check-outline',
+    children: [
+      {
+        path: '/dashboard/process/sample',
+        title: '留样记录',
+        icon: 'mdi:test-tube'
+      },
+      {
+        path: '/dashboard/process/waste',
+        title: '餐厨垃圾处理',
+        icon: 'mdi:delete-outline'
+      },
+      {
+        path: '/dashboard/process/inspection',
+        title: '日常监督检查',
+        icon: 'mdi:clipboard-text-search-outline'
+      },
+      {
+        path: '/dashboard/process/spotcheck',
+        title: '抽检记录',
+        icon: 'mdi:clipboard-list-outline'
+      },
+      {
+        path: '/dashboard/process/quicktest',
+        title: '快检记录',
+        icon: 'mdi:speedometer'
+      }
+    ]
+  },
+
+  // 明厨亮灶系统
+  {
+    path: '/dashboard/kitchen-monitor',
+    title: '明厨亮灶系统',
+    icon: 'mdi:cctv',
+    children: [
+      {
+        path: '/dashboard/kitchen-monitor/video-archive',
+        title: '影像留痕',
+        icon: 'mdi:video-outline'
+      },
+      {
+        path: '/dashboard/kitchen-monitor/video-patrol',
+        title: '视频巡检',
+        icon: 'mdi:video-wireless-outline'
+      },
+      {
+        path: '/dashboard/kitchen-monitor/ai-analysis',
+        title: 'AI智能分析',
+        icon: 'mdi:brain'
+      }
+    ]
+  },
+
+  // 风险预警系统
+  {
+    path: '/dashboard/risk-warning',
+    title: '风险预警系统',
+    icon: 'mdi:alert-circle-outline',
+    children: [
+      {
+        path: '/dashboard/risk-warning/test-fail',
+        title: '快检不合格预警',
+        icon: 'mdi:alert-octagon-outline'
+      },
+      {
+        path: '/dashboard/risk-warning/expiry',
+        title: '过期预警',
+        icon: 'mdi:calendar-alert'
+      },
+      {
+        path: '/dashboard/risk-warning/abnormal',
+        title: '异常提醒',
+        icon: 'mdi:alert-outline'
+      },
+      {
+        path: '/dashboard/risk-warning/level',
+        title: '预警级别管理',
+        icon: 'mdi:signal'
+      }
+    ]
+  },
+
+  // 食品安全报表中心
+  {
+    path: '/dashboard/food-report',
+    title: '食品安全报表',
+    icon: 'mdi:file-chart-outline',
+    children: [
+      {
+        path: '/dashboard/food-report/inventory',
+        title: '出入库报表',
+        icon: 'mdi:package-variant'
+      },
+      {
+        path: '/dashboard/food-report/process',
+        title: '过程管理报表',
+        icon: 'mdi:chart-timeline-variant'
+      },
+      {
+        path: '/dashboard/food-report/operation',
+        title: '运维报表',
+        icon: 'mdi:cog-outline'
+      },
+      {
+        path: '/dashboard/food-report/data-quality',
+        title: '数据质量分析',
+        icon: 'mdi:database-check-outline'
+      }
+    ]
+  },
+
+  // 大数据分析
+  {
+    path: '/dashboard/big-data',
+    title: '大数据分析',
+    icon: 'mdi:chart-line',
+    children: [
+      {
+        path: '/dashboard/big-data/inventory-analysis',
+        title: '出入库分析',
+        icon: 'mdi:chart-bar'
+      },
+      {
+        path: '/dashboard/big-data/purchase-analysis',
+        title: '采购分析',
+        icon: 'mdi:cart-outline'
+      },
+      {
+        path: '/dashboard/big-data/supply-comparison',
+        title: '供应量对比分析',
+        icon: 'mdi:compare'
+      },
+      {
+        path: '/dashboard/big-data/risk-analysis',
+        title: '食品安全风险分析',
+        icon: 'mdi:shield-alert-outline'
+      }
+    ]
+  },
+
+  // ==================== 原有系统功能 ====================
   
   // 通知中心
   {
