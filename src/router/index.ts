@@ -128,6 +128,26 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: '快检记录' }
       },
 
+      // 明厨亮灶系统
+      {
+        path: 'kitchen-monitor/video-archive',
+        name: 'kitchen-monitor-video-archive',
+        component: () => import('../views/dashboard/kitchen-monitor/VideoArchiveView.vue'),
+        meta: { requiresAuth: true, title: '影像留痕' }
+      },
+      {
+        path: 'kitchen-monitor/video-patrol',
+        name: 'kitchen-monitor-video-patrol',
+        component: () => import('../views/dashboard/kitchen-monitor/VideoPatrolView.vue'),
+        meta: { requiresAuth: true, title: '视频巡检' }
+      },
+      {
+        path: 'kitchen-monitor/ai-analysis',
+        name: 'kitchen-monitor-ai-analysis',
+        component: () => import('../views/dashboard/kitchen-monitor/AIAnalysisView.vue'),
+        meta: { requiresAuth: true, title: 'AI智能分析' }
+      },
+
       // ==================== 原有系统功能 ====================
       
       // 通知中心
