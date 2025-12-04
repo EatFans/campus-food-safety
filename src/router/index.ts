@@ -174,7 +174,32 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: '预警级别管理' }
       },
 
-      // ==================== 原有系统功能 ====================
+      // 食品安全报表中心
+      {
+        path: 'food-report/inventory',
+        name: 'food-report-inventory',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/InventoryReportView.vue'),
+        meta: { requiresAuth: true, title: '出入库报表' }
+      },
+      {
+        path: 'food-report/process',
+        name: 'food-report-process',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/ProcessReportView.vue'),
+        meta: { requiresAuth: true, title: '过程管理报表' }
+      },
+      {
+        path: 'food-report/operation',
+        name: 'food-report-operation',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/OperationReportView.vue'),
+        meta: { requiresAuth: true, title: '运维报表' }
+      },
+      {
+        path: 'food-report/data-quality',
+        name: 'food-report-data-quality',
+        component: () => import(/* webpackChunkName: "report" */ '../views/dashboard/report/DataQualityView.vue'),
+        meta: { requiresAuth: true, title: '数据质量分析' }
+      },
+
       
       // 通知中心
       {
