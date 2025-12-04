@@ -94,6 +94,9 @@
             <span class="card-title">风险等级分布</span>
           </template>
           <div class="risk-distribution">
+            <div class="chart-wrapper" style="height: 200px; margin-bottom: 20px;">
+              <v-chart :option="riskDistributionOption" autoresize />
+            </div>
             <div v-for="level in riskLevels" :key="level.name" class="risk-level-item">
               <div class="risk-level-header">
                 <span class="risk-level-name" :style="{ color: level.color }">
@@ -681,6 +684,42 @@ const riskTrendOption = computed(() => ({
             { offset: 1, color: 'rgba(64, 158, 255, 0.05)' }
           ]
         }
+      }
+    }
+  ]
+}))
+
+// 风险分布饼图配置
+const riskDistributionOption = computed(() => ({
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b}: {c}项 ({d}%)'
+  },
+  legend: {
+    orient: 'horizontal',
+    bottom: 0,
+    left: 'center'
+  },
+  series: [
+    {
+      name: '风险等级',
+      type: 'pie',
+      radius: '60%',
+      center: ['50%', '45%'],
+      data: [
+        { value: riskLevels.value[0]?.count || 0, name: '高风险', itemStyle: { color: '#F56C6C' } },
+        { value: riskLevels.value[1]?.count || 0, name: '中风险', itemStyle: { color: '#E6A23C' } },
+        { value: riskLevels.value[2]?.count || 0, name: '低风险', itemStyle: { color: '#409EFF' } }
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      },
+      label: {
+        formatter: '{b}\n{d}%'
       }
     }
   ]
