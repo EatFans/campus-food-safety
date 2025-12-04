@@ -148,6 +148,32 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: 'AI智能分析' }
       },
 
+      // 风险预警系统
+      {
+        path: 'risk-warning/test-fail',
+        name: 'risk-warning-test-fail',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/TestFailWarningView.vue'),
+        meta: { requiresAuth: true, title: '快检不合格预警' }
+      },
+      {
+        path: 'risk-warning/expiry',
+        name: 'risk-warning-expiry',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/ExpiryWarningView.vue'),
+        meta: { requiresAuth: true, title: '过期预警' }
+      },
+      {
+        path: 'risk-warning/abnormal',
+        name: 'risk-warning-abnormal',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/AbnormalReminderView.vue'),
+        meta: { requiresAuth: true, title: '异常提醒' }
+      },
+      {
+        path: 'risk-warning/level',
+        name: 'risk-warning-level',
+        component: () => import(/* webpackChunkName: "risk-warning" */ '../views/dashboard/risk-warning/WarningLevelManageView.vue'),
+        meta: { requiresAuth: true, title: '预警级别管理' }
+      },
+
       // ==================== 原有系统功能 ====================
       
       // 通知中心
