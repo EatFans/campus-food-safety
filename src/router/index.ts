@@ -52,6 +52,82 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, title: '商家档案管理' }
       },
 
+      // 溯源采购系统
+      {
+        path: 'traceability/production',
+        name: 'traceability-production',
+        component: () => import('../views/dashboard/traceability/ProductionView.vue'),
+        meta: { requiresAuth: true, title: '生产环节信息' }
+      },
+      {
+        path: 'traceability/storage',
+        name: 'traceability-storage',
+        component: () => import('../views/dashboard/traceability/StorageView.vue'),
+        meta: { requiresAuth: true, title: '仓储环节信息' }
+      },
+      {
+        path: 'traceability/processing',
+        name: 'traceability-processing',
+        component: () => import('../views/dashboard/traceability/ProcessingView.vue'),
+        meta: { requiresAuth: true, title: '加工环节信息' }
+      },
+      {
+        path: 'traceability/logistics',
+        name: 'traceability-logistics',
+        component: () => import('../views/dashboard/traceability/LogisticsView.vue'),
+        meta: { requiresAuth: true, title: '物流环节信息' }
+      },
+      {
+        path: 'traceability/distribution',
+        name: 'traceability-distribution',
+        component: () => import('../views/dashboard/traceability/DistributionView.vue'),
+        meta: { requiresAuth: true, title: '分销环节信息' }
+      },
+      {
+        path: 'traceability/sales',
+        name: 'traceability-sales',
+        component: () => import('../views/dashboard/traceability/SalesView.vue'),
+        meta: { requiresAuth: true, title: '销售环节信息' }
+      },
+      {
+        path: 'traceability/qrcode',
+        name: 'traceability-qrcode',
+        component: () => import('../views/dashboard/traceability/QRCodeView.vue'),
+        meta: { requiresAuth: true, title: '二维码管理' }
+      },
+
+      // 过程管理系统
+      {
+        path: 'process/sample',
+        name: 'process-sample',
+        component: () => import('../views/dashboard/process/SampleView.vue'),
+        meta: { requiresAuth: true, title: '留样记录' }
+      },
+      {
+        path: 'process/waste',
+        name: 'process-waste',
+        component: () => import('../views/dashboard/process/WasteView.vue'),
+        meta: { requiresAuth: true, title: '餐厨垃圾处理' }
+      },
+      {
+        path: 'process/inspection',
+        name: 'process-inspection',
+        component: () => import('../views/dashboard/process/InspectionView.vue'),
+        meta: { requiresAuth: true, title: '日常监督检查' }
+      },
+      {
+        path: 'process/spotcheck',
+        name: 'process-spotcheck',
+        component: () => import('../views/dashboard/process/SpotCheckView.vue'),
+        meta: { requiresAuth: true, title: '抽检记录' }
+      },
+      {
+        path: 'process/quicktest',
+        name: 'process-quicktest',
+        component: () => import('../views/dashboard/process/QuickTestView.vue'),
+        meta: { requiresAuth: true, title: '快检记录' }
+      },
+
       // ==================== 原有系统功能 ====================
       
       // 通知中心

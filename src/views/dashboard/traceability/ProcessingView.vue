@@ -1,14 +1,14 @@
 <template>
-  <div class="production-view">
+  <div class="processing-view">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
         <div class="header-icon">
-          <el-icon :size="24"><Goods /></el-icon>
+          <el-icon :size="24"><Setting /></el-icon>
         </div>
         <div class="header-content">
-          <h2>生产环节信息管理</h2>
-          <p class="header-desc">记录产品名称、产地、生产日期、批次号、检测报告等生产信息</p>
+          <h2>加工环节信息管理</h2>
+          <p class="header-desc">记录加工时间、加工工艺、操作人员、卫生标准等加工信息</p>
         </div>
       </div>
       <div class="header-actions">
@@ -22,11 +22,11 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon">
-            <el-icon :size="32"><Box /></el-icon>
+            <el-icon :size="32"><Setting /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.total }}</div>
-            <div class="stat-label">生产记录总数</div>
+            <div class="stat-label">加工记录总数</div>
           </div>
         </div>
       </el-col>
@@ -36,8 +36,8 @@
             <el-icon :size="32"><CircleCheck /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.qualified }}</div>
-            <div class="stat-label">检测合格</div>
+            <div class="stat-value">{{ statistics.completed }}</div>
+            <div class="stat-label">已完成</div>
           </div>
         </div>
       </el-col>
@@ -47,8 +47,8 @@
             <el-icon :size="32"><Clock /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.pending }}</div>
-            <div class="stat-label">待检测</div>
+            <div class="stat-value">{{ statistics.processing }}</div>
+            <div class="stat-label">加工中</div>
           </div>
         </div>
       </el-col>
@@ -59,7 +59,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.today }}</div>
-            <div class="stat-label">今日新增</div>
+            <div class="stat-label">今日加工</div>
           </div>
         </div>
       </el-col>
@@ -77,27 +77,18 @@
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="产地">
-          <el-input 
-            v-model="searchForm.origin" 
-            placeholder="请输入产地" 
-            clearable 
-            style="width: 150px"
-          />
-        </el-form-item>
-        <el-form-item label="批次号">
-          <el-input 
-            v-model="searchForm.batchNo" 
-            placeholder="请输入批次号" 
-            clearable 
-            style="width: 180px"
-          />
+        <el-form-item label="加工车间">
+          <el-select v-model="searchForm.workshop" placeholder="请选择车间" clearable style="width: 150px">
+            <el-option label="蔬菜加工车间" value="1" />
+            <el-option label="肉类加工车间" value="2" />
+            <el-option label="面点加工车间" value="3" />
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="searchForm.status" placeholder="请选择" clearable style="width: 120px">
-            <el-option label="合格" value="qualified" />
-            <el-option label="待检" value="pending" />
-            <el-option label="不合格" value="unqualified" />
+            <el-option label="已完成" value="completed" />
+            <el-option label="加工中" value="processing" />
+            <el-option label="待加工" value="pending" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -112,16 +103,12 @@
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="序号" width="60" />
         <el-table-column prop="productName" label="产品名称" min-width="120" />
-        <el-table-column prop="origin" label="产地" width="120" />
-        <el-table-column prop="productionDate" label="生产日期" width="120" />
-        <el-table-column prop="batchNo" label="批次号" width="150" />
-        <el-table-column prop="testReport" label="检测报告" width="100">
-          <template #default="{ row }">
-            <el-link type="primary" v-if="row.testReport">查看</el-link>
-            <el-tag type="info" v-else size="small">未上传</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
+        <el-table-column prop="workshop" label="加工车间" width="120" />
+        <el-table-column prop="operator" label="操作人员" width="100" />
+        <el-table-column prop="startTime" label="开始时间" width="150" />
+        <el-table-column prop="endTime" label="结束时间" width="150" />
+        <el-table-column prop="quantity" label="加工数量" width="100" />
+        <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
           </template>
@@ -151,22 +138,21 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { Plus, Download, Search, Refresh, View, Edit, Delete, Goods, Box, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
+import { Plus, Download, Search, Refresh, View, Edit, Delete, Setting, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 统计数据
 const statistics = reactive({
-  total: 1248,
-  qualified: 1235,
-  pending: 8,
-  today: 15
+  total: 2156,
+  completed: 2089,
+  processing: 42,
+  today: 125
 })
 
 // 搜索表单
 const searchForm = reactive({
   productName: '',
-  origin: '',
-  batchNo: '',
+  workshop: '',
   status: ''
 })
 
@@ -175,30 +161,33 @@ const loading = ref(false)
 const tableData = ref([
   {
     id: 1,
-    productName: '有机西红柿',
-    origin: '山东寿光',
-    productionDate: '2024-12-01',
-    batchNo: 'XHS20241201001',
-    testReport: true,
-    status: '合格'
+    productName: '清炒时蔬',
+    workshop: '蔬菜加工车间',
+    operator: '张师傅',
+    startTime: '2024-12-04 08:00',
+    endTime: '2024-12-04 09:30',
+    quantity: '50份',
+    status: '已完成'
   },
   {
     id: 2,
-    productName: '鲜猪肉',
-    origin: '河北保定',
-    productionDate: '2024-12-03',
-    batchNo: 'ZR20241203002',
-    testReport: true,
-    status: '合格'
+    productName: '红烧肉',
+    workshop: '肉类加工车间',
+    operator: '李师傅',
+    startTime: '2024-12-04 09:00',
+    endTime: '2024-12-04 11:00',
+    quantity: '80份',
+    status: '已完成'
   },
   {
     id: 3,
-    productName: '大米',
-    origin: '黑龙江五常',
-    productionDate: '2024-11-20',
-    batchNo: 'DM20241120003',
-    testReport: false,
-    status: '待检'
+    productName: '包子',
+    workshop: '面点加工车间',
+    operator: '王师傅',
+    startTime: '2024-12-04 10:00',
+    endTime: '-',
+    quantity: '200个',
+    status: '加工中'
   }
 ])
 
@@ -210,9 +199,9 @@ const pagination = reactive({
 
 const getStatusType = (status: string) => {
   const map: Record<string, any> = {
-    '合格': 'success',
-    '待检': 'warning',
-    '不合格': 'danger'
+    '已完成': 'success',
+    '加工中': 'warning',
+    '待加工': 'info'
   }
   return map[status] || 'info'
 }
@@ -231,21 +220,20 @@ const handleSearch = () => {
 
 const handleReset = () => {
   searchForm.productName = ''
-  searchForm.origin = ''
-  searchForm.batchNo = ''
+  searchForm.workshop = ''
   searchForm.status = ''
 }
 
 const handleView = (row: any) => {
-  ElMessage.info(`查看生产记录: ${row.productName}`)
+  ElMessage.info(`查看加工记录: ${row.productName}`)
 }
 
 const handleEdit = (row: any) => {
-  ElMessage.info(`编辑生产记录: ${row.productName}`)
+  ElMessage.info(`编辑加工记录: ${row.productName}`)
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定要删除生产记录"${row.productName}"吗?`, '提示', {
+  ElMessageBox.confirm(`确定要删除加工记录"${row.productName}"吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +244,7 @@ const handleDelete = (row: any) => {
 </script>
 
 <style scoped>
-.production-view {
+.processing-view {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 60px);

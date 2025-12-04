@@ -1,14 +1,14 @@
 <template>
-  <div class="production-view">
+  <div class="sales-view">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
         <div class="header-icon">
-          <el-icon :size="24"><Goods /></el-icon>
+          <el-icon :size="24"><ShoppingCart /></el-icon>
         </div>
         <div class="header-content">
-          <h2>生产环节信息管理</h2>
-          <p class="header-desc">记录产品名称、产地、生产日期、批次号、检测报告等生产信息</p>
+          <h2>销售环节信息管理</h2>
+          <p class="header-desc">记录销售时间、销售数量、销售价格、购买者信息等销售数据</p>
         </div>
       </div>
       <div class="header-actions">
@@ -22,33 +22,33 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon">
-            <el-icon :size="32"><Box /></el-icon>
+            <el-icon :size="32"><ShoppingCart /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.total }}</div>
-            <div class="stat-label">生产记录总数</div>
+            <div class="stat-label">销售记录总数</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-green">
           <div class="stat-icon">
-            <el-icon :size="32"><CircleCheck /></el-icon>
+            <el-icon :size="32"><Money /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.qualified }}</div>
-            <div class="stat-label">检测合格</div>
+            <div class="stat-value">{{ statistics.revenue }}</div>
+            <div class="stat-label">本月营收(万元)</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-orange">
           <div class="stat-icon">
-            <el-icon :size="32"><Clock /></el-icon>
+            <el-icon :size="32"><TrendCharts /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.pending }}</div>
-            <div class="stat-label">待检测</div>
+            <div class="stat-value">{{ statistics.volume }}</div>
+            <div class="stat-label">本月销量(份)</div>
           </div>
         </div>
       </el-col>
@@ -59,7 +59,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.today }}</div>
-            <div class="stat-label">今日新增</div>
+            <div class="stat-label">今日销售</div>
           </div>
         </div>
       </el-col>
@@ -77,28 +77,22 @@
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="产地">
-          <el-input 
-            v-model="searchForm.origin" 
-            placeholder="请输入产地" 
-            clearable 
-            style="width: 150px"
-          />
-        </el-form-item>
-        <el-form-item label="批次号">
-          <el-input 
-            v-model="searchForm.batchNo" 
-            placeholder="请输入批次号" 
-            clearable 
-            style="width: 180px"
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="searchForm.status" placeholder="请选择" clearable style="width: 120px">
-            <el-option label="合格" value="qualified" />
-            <el-option label="待检" value="pending" />
-            <el-option label="不合格" value="unqualified" />
+        <el-form-item label="销售点">
+          <el-select v-model="searchForm.salesPoint" placeholder="请选择销售点" clearable style="width: 150px">
+            <el-option label="第一食堂" value="1" />
+            <el-option label="第二食堂" value="2" />
+            <el-option label="第三食堂" value="3" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker
+            v-model="searchForm.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 240px"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :icon="Search" @click="handleSearch">查询</el-button>
@@ -111,21 +105,14 @@
     <el-card shadow="never" class="table-card">
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="序号" width="60" />
+        <el-table-column prop="orderNo" label="订单号" width="150" />
         <el-table-column prop="productName" label="产品名称" min-width="120" />
-        <el-table-column prop="origin" label="产地" width="120" />
-        <el-table-column prop="productionDate" label="生产日期" width="120" />
-        <el-table-column prop="batchNo" label="批次号" width="150" />
-        <el-table-column prop="testReport" label="检测报告" width="100">
-          <template #default="{ row }">
-            <el-link type="primary" v-if="row.testReport">查看</el-link>
-            <el-tag type="info" v-else size="small">未上传</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column prop="salesPoint" label="销售点" width="100" />
+        <el-table-column prop="quantity" label="销售数量" width="100" />
+        <el-table-column prop="price" label="单价(元)" width="100" />
+        <el-table-column prop="totalAmount" label="总金额(元)" width="100" />
+        <el-table-column prop="salesTime" label="销售时间" width="150" />
+        <el-table-column prop="customer" label="购买者" width="100" />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link :icon="View" @click="handleView(row)">查看</el-button>
@@ -151,23 +138,22 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { Plus, Download, Search, Refresh, View, Edit, Delete, Goods, Box, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
+import { Plus, Download, Search, Refresh, View, Edit, Delete, ShoppingCart, Money, TrendCharts, Calendar } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 统计数据
 const statistics = reactive({
-  total: 1248,
-  qualified: 1235,
-  pending: 8,
-  today: 15
+  total: 45680,
+  revenue: 128.5,
+  volume: 38560,
+  today: 1256
 })
 
 // 搜索表单
 const searchForm = reactive({
   productName: '',
-  origin: '',
-  batchNo: '',
-  status: ''
+  salesPoint: '',
+  date: ''
 })
 
 const loading = ref(false)
@@ -175,30 +161,36 @@ const loading = ref(false)
 const tableData = ref([
   {
     id: 1,
-    productName: '有机西红柿',
-    origin: '山东寿光',
-    productionDate: '2024-12-01',
-    batchNo: 'XHS20241201001',
-    testReport: true,
-    status: '合格'
+    orderNo: 'XS20241204001',
+    productName: '宫保鸡丁套餐',
+    salesPoint: '第一食堂',
+    quantity: 1,
+    price: 15.00,
+    totalAmount: 15.00,
+    salesTime: '2024-12-04 12:15',
+    customer: '张同学'
   },
   {
     id: 2,
-    productName: '鲜猪肉',
-    origin: '河北保定',
-    productionDate: '2024-12-03',
-    batchNo: 'ZR20241203002',
-    testReport: true,
-    status: '合格'
+    orderNo: 'XS20241204002',
+    productName: '红烧肉套餐',
+    salesPoint: '第一食堂',
+    quantity: 2,
+    price: 18.00,
+    totalAmount: 36.00,
+    salesTime: '2024-12-04 12:20',
+    customer: '李同学'
   },
   {
     id: 3,
-    productName: '大米',
-    origin: '黑龙江五常',
-    productionDate: '2024-11-20',
-    batchNo: 'DM20241120003',
-    testReport: false,
-    status: '待检'
+    orderNo: 'XS20241204003',
+    productName: '素菜套餐',
+    salesPoint: '第二食堂',
+    quantity: 1,
+    price: 12.00,
+    totalAmount: 12.00,
+    salesTime: '2024-12-04 12:25',
+    customer: '王同学'
   }
 ])
 
@@ -207,15 +199,6 @@ const pagination = reactive({
   size: 10,
   total: 3
 })
-
-const getStatusType = (status: string) => {
-  const map: Record<string, any> = {
-    '合格': 'success',
-    '待检': 'warning',
-    '不合格': 'danger'
-  }
-  return map[status] || 'info'
-}
 
 const handleAdd = () => {
   ElMessage.info('打开新增对话框')
@@ -231,21 +214,20 @@ const handleSearch = () => {
 
 const handleReset = () => {
   searchForm.productName = ''
-  searchForm.origin = ''
-  searchForm.batchNo = ''
-  searchForm.status = ''
+  searchForm.salesPoint = ''
+  searchForm.date = ''
 }
 
 const handleView = (row: any) => {
-  ElMessage.info(`查看生产记录: ${row.productName}`)
+  ElMessage.info(`查看销售记录: ${row.orderNo}`)
 }
 
 const handleEdit = (row: any) => {
-  ElMessage.info(`编辑生产记录: ${row.productName}`)
+  ElMessage.info(`编辑销售记录: ${row.orderNo}`)
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定要删除生产记录"${row.productName}"吗?`, '提示', {
+  ElMessageBox.confirm(`确定要删除销售记录"${row.orderNo}"吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +238,7 @@ const handleDelete = (row: any) => {
 </script>
 
 <style scoped>
-.production-view {
+.sales-view {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 60px);

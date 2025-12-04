@@ -1,14 +1,14 @@
 <template>
-  <div class="production-view">
+  <div class="spotcheck-view">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
         <div class="header-icon">
-          <el-icon :size="24"><Goods /></el-icon>
+          <el-icon :size="24"><Checked /></el-icon>
         </div>
         <div class="header-content">
-          <h2>生产环节信息管理</h2>
-          <p class="header-desc">记录产品名称、产地、生产日期、批次号、检测报告等生产信息</p>
+          <h2>抽检记录管理</h2>
+          <p class="header-desc">记录抽检时间、抽检项目、检测机构、检测结果等抽检信息</p>
         </div>
       </div>
       <div class="header-actions">
@@ -22,11 +22,11 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon">
-            <el-icon :size="32"><Box /></el-icon>
+            <el-icon :size="32"><Checked /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.total }}</div>
-            <div class="stat-label">生产记录总数</div>
+            <div class="stat-label">抽检记录总数</div>
           </div>
         </div>
       </el-col>
@@ -44,22 +44,22 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-orange">
           <div class="stat-icon">
-            <el-icon :size="32"><Clock /></el-icon>
+            <el-icon :size="32"><WarningFilled /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.pending }}</div>
-            <div class="stat-label">待检测</div>
+            <div class="stat-value">{{ statistics.unqualified }}</div>
+            <div class="stat-label">不合格</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-cyan">
           <div class="stat-icon">
-            <el-icon :size="32"><Calendar /></el-icon>
+            <el-icon :size="32"><TrendCharts /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.today }}</div>
-            <div class="stat-label">今日新增</div>
+            <div class="stat-value">{{ statistics.rate }}%</div>
+            <div class="stat-label">合格率</div>
           </div>
         </div>
       </el-col>
@@ -68,36 +68,28 @@
     <!-- 搜索区域 -->
     <el-card shadow="never" class="search-card">
       <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item label="产品名称">
+        <el-form-item label="样品名称">
           <el-input 
-            v-model="searchForm.productName" 
-            placeholder="请输入产品名称" 
+            v-model="searchForm.sampleName" 
+            placeholder="请输入样品名称" 
             clearable 
             :prefix-icon="Search"
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="产地">
+        <el-form-item label="检测机构">
           <el-input 
-            v-model="searchForm.origin" 
-            placeholder="请输入产地" 
-            clearable 
-            style="width: 150px"
-          />
-        </el-form-item>
-        <el-form-item label="批次号">
-          <el-input 
-            v-model="searchForm.batchNo" 
-            placeholder="请输入批次号" 
+            v-model="searchForm.agency" 
+            placeholder="请输入检测机构" 
             clearable 
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="searchForm.status" placeholder="请选择" clearable style="width: 120px">
+        <el-form-item label="检测结果">
+          <el-select v-model="searchForm.result" placeholder="请选择" clearable style="width: 120px">
             <el-option label="合格" value="qualified" />
-            <el-option label="待检" value="pending" />
             <el-option label="不合格" value="unqualified" />
+            <el-option label="待检测" value="pending" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -111,24 +103,21 @@
     <el-card shadow="never" class="table-card">
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="序号" width="60" />
-        <el-table-column prop="productName" label="产品名称" min-width="120" />
-        <el-table-column prop="origin" label="产地" width="120" />
-        <el-table-column prop="productionDate" label="生产日期" width="120" />
-        <el-table-column prop="batchNo" label="批次号" width="150" />
-        <el-table-column prop="testReport" label="检测报告" width="100">
+        <el-table-column prop="sampleNo" label="样品编号" width="150" />
+        <el-table-column prop="sampleName" label="样品名称" min-width="120" />
+        <el-table-column prop="canteen" label="抽检地点" width="100" />
+        <el-table-column prop="checkDate" label="抽检日期" width="120" />
+        <el-table-column prop="agency" label="检测机构" min-width="150" />
+        <el-table-column prop="items" label="检测项目" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="result" label="检测结果" width="100">
           <template #default="{ row }">
-            <el-link type="primary" v-if="row.testReport">查看</el-link>
-            <el-tag type="info" v-else size="small">未上传</el-tag>
+            <el-tag :type="getResultType(row.result)">{{ row.result }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link :icon="View" @click="handleView(row)">查看</el-button>
+            <el-button type="success" link @click="handleReport(row)">报告</el-button>
             <el-button type="primary" link :icon="Edit" @click="handleEdit(row)">编辑</el-button>
             <el-button type="danger" link :icon="Delete" @click="handleDelete(row)">删除</el-button>
           </template>
@@ -151,23 +140,22 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { Plus, Download, Search, Refresh, View, Edit, Delete, Goods, Box, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
+import { Plus, Download, Search, Refresh, View, Edit, Delete, Checked, CircleCheck, WarningFilled, TrendCharts } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 统计数据
 const statistics = reactive({
-  total: 1248,
-  qualified: 1235,
-  pending: 8,
-  today: 15
+  total: 856,
+  qualified: 842,
+  unqualified: 8,
+  rate: 98.4
 })
 
 // 搜索表单
 const searchForm = reactive({
-  productName: '',
-  origin: '',
-  batchNo: '',
-  status: ''
+  sampleName: '',
+  agency: '',
+  result: ''
 })
 
 const loading = ref(false)
@@ -175,30 +163,33 @@ const loading = ref(false)
 const tableData = ref([
   {
     id: 1,
-    productName: '有机西红柿',
-    origin: '山东寿光',
-    productionDate: '2024-12-01',
-    batchNo: 'XHS20241201001',
-    testReport: true,
-    status: '合格'
+    sampleNo: 'CJ20241204001',
+    sampleName: '有机蔬菜',
+    canteen: '第一食堂',
+    checkDate: '2024-12-04',
+    agency: '市食品检测中心',
+    items: '农药残留、重金属',
+    result: '合格'
   },
   {
     id: 2,
-    productName: '鲜猪肉',
-    origin: '河北保定',
-    productionDate: '2024-12-03',
-    batchNo: 'ZR20241203002',
-    testReport: true,
-    status: '合格'
+    sampleNo: 'CJ20241204002',
+    sampleName: '鲜猪肉',
+    canteen: '第二食堂',
+    checkDate: '2024-12-03',
+    agency: '市食品检测中心',
+    items: '瘦肉精、兽药残留',
+    result: '合格'
   },
   {
     id: 3,
-    productName: '大米',
-    origin: '黑龙江五常',
-    productionDate: '2024-11-20',
-    batchNo: 'DM20241120003',
-    testReport: false,
-    status: '待检'
+    sampleNo: 'CJ20241204003',
+    sampleName: '食用油',
+    canteen: '第三食堂',
+    checkDate: '2024-12-02',
+    agency: '省质检院',
+    items: '酸价、过氧化值、黄曲霉毒素',
+    result: '待检测'
   }
 ])
 
@@ -208,13 +199,13 @@ const pagination = reactive({
   total: 3
 })
 
-const getStatusType = (status: string) => {
+const getResultType = (result: string) => {
   const map: Record<string, any> = {
     '合格': 'success',
-    '待检': 'warning',
-    '不合格': 'danger'
+    '不合格': 'danger',
+    '待检测': 'warning'
   }
-  return map[status] || 'info'
+  return map[result] || 'info'
 }
 
 const handleAdd = () => {
@@ -230,22 +221,25 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
-  searchForm.productName = ''
-  searchForm.origin = ''
-  searchForm.batchNo = ''
-  searchForm.status = ''
+  searchForm.sampleName = ''
+  searchForm.agency = ''
+  searchForm.result = ''
 }
 
 const handleView = (row: any) => {
-  ElMessage.info(`查看生产记录: ${row.productName}`)
+  ElMessage.info(`查看抽检记录: ${row.sampleName}`)
+}
+
+const handleReport = (row: any) => {
+  ElMessage.info(`查看检测报告: ${row.sampleName}`)
 }
 
 const handleEdit = (row: any) => {
-  ElMessage.info(`编辑生产记录: ${row.productName}`)
+  ElMessage.info(`编辑抽检记录: ${row.sampleName}`)
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定要删除生产记录"${row.productName}"吗?`, '提示', {
+  ElMessageBox.confirm(`确定要删除抽检记录"${row.sampleName}"吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +250,7 @@ const handleDelete = (row: any) => {
 </script>
 
 <style scoped>
-.production-view {
+.spotcheck-view {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 60px);

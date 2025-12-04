@@ -1,19 +1,19 @@
 <template>
-  <div class="production-view">
+  <div class="qrcode-view">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
         <div class="header-icon">
-          <el-icon :size="24"><Goods /></el-icon>
+          <el-icon :size="24"><Stamp /></el-icon>
         </div>
         <div class="header-content">
-          <h2>生产环节信息管理</h2>
-          <p class="header-desc">记录产品名称、产地、生产日期、批次号、检测报告等生产信息</p>
+          <h2>二维码管理</h2>
+          <p class="header-desc">生成、管理、追溯产品二维码,实现全流程信息追踪</p>
         </div>
       </div>
       <div class="header-actions">
-        <el-button type="primary" :icon="Plus" @click="handleAdd">新增记录</el-button>
-        <el-button :icon="Download">导出数据</el-button>
+        <el-button type="primary" :icon="Plus" @click="handleAdd">生成二维码</el-button>
+        <el-button :icon="Download">批量导出</el-button>
       </div>
     </div>
 
@@ -22,11 +22,11 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon">
-            <el-icon :size="32"><Box /></el-icon>
+            <el-icon :size="32"><Stamp /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.total }}</div>
-            <div class="stat-label">生产记录总数</div>
+            <div class="stat-label">二维码总数</div>
           </div>
         </div>
       </el-col>
@@ -36,19 +36,19 @@
             <el-icon :size="32"><CircleCheck /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.qualified }}</div>
-            <div class="stat-label">检测合格</div>
+            <div class="stat-value">{{ statistics.active }}</div>
+            <div class="stat-label">使用中</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-orange">
           <div class="stat-icon">
-            <el-icon :size="32"><Clock /></el-icon>
+            <el-icon :size="32"><View /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.pending }}</div>
-            <div class="stat-label">待检测</div>
+            <div class="stat-value">{{ statistics.scans }}</div>
+            <div class="stat-label">今日扫码次数</div>
           </div>
         </div>
       </el-col>
@@ -68,36 +68,28 @@
     <!-- 搜索区域 -->
     <el-card shadow="never" class="search-card">
       <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item label="产品名称">
+        <el-form-item label="二维码编号">
           <el-input 
-            v-model="searchForm.productName" 
-            placeholder="请输入产品名称" 
+            v-model="searchForm.qrCode" 
+            placeholder="请输入二维码编号" 
             clearable 
             :prefix-icon="Search"
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="产地">
+        <el-form-item label="产品名称">
           <el-input 
-            v-model="searchForm.origin" 
-            placeholder="请输入产地" 
+            v-model="searchForm.productName" 
+            placeholder="请输入产品名称" 
             clearable 
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="批次号">
-          <el-input 
-            v-model="searchForm.batchNo" 
-            placeholder="请输入批次号" 
-            clearable 
-            style="width: 180px"
-          />
-        </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="searchForm.status" placeholder="请选择" clearable style="width: 120px">
-            <el-option label="合格" value="qualified" />
-            <el-option label="待检" value="pending" />
-            <el-option label="不合格" value="unqualified" />
+            <el-option label="使用中" value="active" />
+            <el-option label="已失效" value="expired" />
+            <el-option label="已停用" value="disabled" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -111,25 +103,22 @@
     <el-card shadow="never" class="table-card">
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="序号" width="60" />
+        <el-table-column prop="qrCode" label="二维码编号" width="180" />
         <el-table-column prop="productName" label="产品名称" min-width="120" />
-        <el-table-column prop="origin" label="产地" width="120" />
-        <el-table-column prop="productionDate" label="生产日期" width="120" />
         <el-table-column prop="batchNo" label="批次号" width="150" />
-        <el-table-column prop="testReport" label="检测报告" width="100">
-          <template #default="{ row }">
-            <el-link type="primary" v-if="row.testReport">查看</el-link>
-            <el-tag type="info" v-else size="small">未上传</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
+        <el-table-column prop="createTime" label="生成时间" width="150" />
+        <el-table-column prop="scanCount" label="扫码次数" width="100" />
+        <el-table-column prop="lastScanTime" label="最后扫码时间" width="150" />
+        <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link :icon="View" @click="handleView(row)">查看</el-button>
-            <el-button type="primary" link :icon="Edit" @click="handleEdit(row)">编辑</el-button>
+            <el-button type="success" link @click="handlePreview(row)">预览</el-button>
+            <el-button type="warning" link @click="handleDownload(row)">下载</el-button>
             <el-button type="danger" link :icon="Delete" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -151,22 +140,21 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { Plus, Download, Search, Refresh, View, Edit, Delete, Goods, Box, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
+import { Plus, Download, Search, Refresh, View, Delete, Stamp, CircleCheck, Calendar } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 统计数据
 const statistics = reactive({
-  total: 1248,
-  qualified: 1235,
-  pending: 8,
-  today: 15
+  total: 8562,
+  active: 7845,
+  scans: 2156,
+  today: 125
 })
 
 // 搜索表单
 const searchForm = reactive({
+  qrCode: '',
   productName: '',
-  origin: '',
-  batchNo: '',
   status: ''
 })
 
@@ -175,30 +163,33 @@ const loading = ref(false)
 const tableData = ref([
   {
     id: 1,
+    qrCode: 'QR20241204001',
     productName: '有机西红柿',
-    origin: '山东寿光',
-    productionDate: '2024-12-01',
     batchNo: 'XHS20241201001',
-    testReport: true,
-    status: '合格'
+    createTime: '2024-12-01 08:00',
+    scanCount: 156,
+    lastScanTime: '2024-12-04 10:30',
+    status: '使用中'
   },
   {
     id: 2,
+    qrCode: 'QR20241204002',
     productName: '鲜猪肉',
-    origin: '河北保定',
-    productionDate: '2024-12-03',
     batchNo: 'ZR20241203002',
-    testReport: true,
-    status: '合格'
+    createTime: '2024-12-03 09:00',
+    scanCount: 89,
+    lastScanTime: '2024-12-04 11:15',
+    status: '使用中'
   },
   {
     id: 3,
+    qrCode: 'QR20241120003',
     productName: '大米',
-    origin: '黑龙江五常',
-    productionDate: '2024-11-20',
     batchNo: 'DM20241120003',
-    testReport: false,
-    status: '待检'
+    createTime: '2024-11-20 10:00',
+    scanCount: 245,
+    lastScanTime: '2024-11-30 16:20',
+    status: '已失效'
   }
 ])
 
@@ -210,15 +201,15 @@ const pagination = reactive({
 
 const getStatusType = (status: string) => {
   const map: Record<string, any> = {
-    '合格': 'success',
-    '待检': 'warning',
-    '不合格': 'danger'
+    '使用中': 'success',
+    '已失效': 'info',
+    '已停用': 'danger'
   }
   return map[status] || 'info'
 }
 
 const handleAdd = () => {
-  ElMessage.info('打开新增对话框')
+  ElMessage.info('打开生成二维码对话框')
 }
 
 const handleSearch = () => {
@@ -230,22 +221,25 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
+  searchForm.qrCode = ''
   searchForm.productName = ''
-  searchForm.origin = ''
-  searchForm.batchNo = ''
   searchForm.status = ''
 }
 
 const handleView = (row: any) => {
-  ElMessage.info(`查看生产记录: ${row.productName}`)
+  ElMessage.info(`查看二维码详情: ${row.qrCode}`)
 }
 
-const handleEdit = (row: any) => {
-  ElMessage.info(`编辑生产记录: ${row.productName}`)
+const handlePreview = (row: any) => {
+  ElMessage.info(`预览二维码: ${row.qrCode}`)
+}
+
+const handleDownload = (row: any) => {
+  ElMessage.success(`下载二维码: ${row.qrCode}`)
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定要删除生产记录"${row.productName}"吗?`, '提示', {
+  ElMessageBox.confirm(`确定要删除二维码"${row.qrCode}"吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +250,7 @@ const handleDelete = (row: any) => {
 </script>
 
 <style scoped>
-.production-view {
+.qrcode-view {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 60px);

@@ -1,14 +1,14 @@
 <template>
-  <div class="production-view">
+  <div class="sample-view">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-left">
         <div class="header-icon">
-          <el-icon :size="24"><Goods /></el-icon>
+          <el-icon :size="24"><Memo /></el-icon>
         </div>
         <div class="header-content">
-          <h2>生产环节信息管理</h2>
-          <p class="header-desc">记录产品名称、产地、生产日期、批次号、检测报告等生产信息</p>
+          <h2>留样记录管理</h2>
+          <p class="header-desc">记录留样时间、留样品种、留样数量、保存条件等留样信息</p>
         </div>
       </div>
       <div class="header-actions">
@@ -22,11 +22,11 @@
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon">
-            <el-icon :size="32"><Box /></el-icon>
+            <el-icon :size="32"><Memo /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.total }}</div>
-            <div class="stat-label">生产记录总数</div>
+            <div class="stat-label">留样记录总数</div>
           </div>
         </div>
       </el-col>
@@ -36,19 +36,19 @@
             <el-icon :size="32"><CircleCheck /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.qualified }}</div>
-            <div class="stat-label">检测合格</div>
+            <div class="stat-value">{{ statistics.valid }}</div>
+            <div class="stat-label">保存中</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12" :lg="6">
         <div class="stat-card stat-card-orange">
           <div class="stat-icon">
-            <el-icon :size="32"><Clock /></el-icon>
+            <el-icon :size="32"><Warning /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ statistics.pending }}</div>
-            <div class="stat-label">待检测</div>
+            <div class="stat-value">{{ statistics.expiring }}</div>
+            <div class="stat-label">即将到期</div>
           </div>
         </div>
       </el-col>
@@ -59,7 +59,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.today }}</div>
-            <div class="stat-label">今日新增</div>
+            <div class="stat-label">今日留样</div>
           </div>
         </div>
       </el-col>
@@ -68,36 +68,27 @@
     <!-- 搜索区域 -->
     <el-card shadow="never" class="search-card">
       <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-form-item label="产品名称">
+        <el-form-item label="菜品名称">
           <el-input 
-            v-model="searchForm.productName" 
-            placeholder="请输入产品名称" 
+            v-model="searchForm.dishName" 
+            placeholder="请输入菜品名称" 
             clearable 
             :prefix-icon="Search"
             style="width: 180px"
           />
         </el-form-item>
-        <el-form-item label="产地">
-          <el-input 
-            v-model="searchForm.origin" 
-            placeholder="请输入产地" 
-            clearable 
-            style="width: 150px"
-          />
-        </el-form-item>
-        <el-form-item label="批次号">
-          <el-input 
-            v-model="searchForm.batchNo" 
-            placeholder="请输入批次号" 
-            clearable 
-            style="width: 180px"
-          />
+        <el-form-item label="食堂">
+          <el-select v-model="searchForm.canteen" placeholder="请选择食堂" clearable style="width: 150px">
+            <el-option label="第一食堂" value="1" />
+            <el-option label="第二食堂" value="2" />
+            <el-option label="第三食堂" value="3" />
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="searchForm.status" placeholder="请选择" clearable style="width: 120px">
-            <el-option label="合格" value="qualified" />
-            <el-option label="待检" value="pending" />
-            <el-option label="不合格" value="unqualified" />
+            <el-option label="保存中" value="valid" />
+            <el-option label="即将到期" value="expiring" />
+            <el-option label="已销毁" value="destroyed" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -111,17 +102,14 @@
     <el-card shadow="never" class="table-card">
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="序号" width="60" />
-        <el-table-column prop="productName" label="产品名称" min-width="120" />
-        <el-table-column prop="origin" label="产地" width="120" />
-        <el-table-column prop="productionDate" label="生产日期" width="120" />
-        <el-table-column prop="batchNo" label="批次号" width="150" />
-        <el-table-column prop="testReport" label="检测报告" width="100">
-          <template #default="{ row }">
-            <el-link type="primary" v-if="row.testReport">查看</el-link>
-            <el-tag type="info" v-else size="small">未上传</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
+        <el-table-column prop="dishName" label="菜品名称" min-width="120" />
+        <el-table-column prop="canteen" label="所属食堂" width="100" />
+        <el-table-column prop="sampleTime" label="留样时间" width="150" />
+        <el-table-column prop="quantity" label="留样数量" width="100" />
+        <el-table-column prop="temperature" label="保存温度" width="100" />
+        <el-table-column prop="expiryTime" label="到期时间" width="150" />
+        <el-table-column prop="operator" label="操作人员" width="100" />
+        <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
           </template>
@@ -151,22 +139,21 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { Plus, Download, Search, Refresh, View, Edit, Delete, Goods, Box, CircleCheck, Clock, Calendar } from '@element-plus/icons-vue'
+import { Plus, Download, Search, Refresh, View, Edit, Delete, Memo, CircleCheck, Warning, Calendar } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 统计数据
 const statistics = reactive({
-  total: 1248,
-  qualified: 1235,
-  pending: 8,
-  today: 15
+  total: 3568,
+  valid: 3420,
+  expiring: 45,
+  today: 156
 })
 
 // 搜索表单
 const searchForm = reactive({
-  productName: '',
-  origin: '',
-  batchNo: '',
+  dishName: '',
+  canteen: '',
   status: ''
 })
 
@@ -175,30 +162,36 @@ const loading = ref(false)
 const tableData = ref([
   {
     id: 1,
-    productName: '有机西红柿',
-    origin: '山东寿光',
-    productionDate: '2024-12-01',
-    batchNo: 'XHS20241201001',
-    testReport: true,
-    status: '合格'
+    dishName: '宫保鸡丁',
+    canteen: '第一食堂',
+    sampleTime: '2024-12-04 11:30',
+    quantity: '250g',
+    temperature: '0-6℃',
+    expiryTime: '2024-12-06 11:30',
+    operator: '张师傅',
+    status: '保存中'
   },
   {
     id: 2,
-    productName: '鲜猪肉',
-    origin: '河北保定',
-    productionDate: '2024-12-03',
-    batchNo: 'ZR20241203002',
-    testReport: true,
-    status: '合格'
+    dishName: '红烧肉',
+    canteen: '第一食堂',
+    sampleTime: '2024-12-04 11:35',
+    quantity: '250g',
+    temperature: '0-6℃',
+    expiryTime: '2024-12-06 11:35',
+    operator: '李师傅',
+    status: '保存中'
   },
   {
     id: 3,
-    productName: '大米',
-    origin: '黑龙江五常',
-    productionDate: '2024-11-20',
-    batchNo: 'DM20241120003',
-    testReport: false,
-    status: '待检'
+    dishName: '清炒时蔬',
+    canteen: '第二食堂',
+    sampleTime: '2024-12-02 11:30',
+    quantity: '250g',
+    temperature: '0-6℃',
+    expiryTime: '2024-12-04 11:30',
+    operator: '王师傅',
+    status: '即将到期'
   }
 ])
 
@@ -210,9 +203,9 @@ const pagination = reactive({
 
 const getStatusType = (status: string) => {
   const map: Record<string, any> = {
-    '合格': 'success',
-    '待检': 'warning',
-    '不合格': 'danger'
+    '保存中': 'success',
+    '即将到期': 'warning',
+    '已销毁': 'info'
   }
   return map[status] || 'info'
 }
@@ -230,22 +223,21 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
-  searchForm.productName = ''
-  searchForm.origin = ''
-  searchForm.batchNo = ''
+  searchForm.dishName = ''
+  searchForm.canteen = ''
   searchForm.status = ''
 }
 
 const handleView = (row: any) => {
-  ElMessage.info(`查看生产记录: ${row.productName}`)
+  ElMessage.info(`查看留样记录: ${row.dishName}`)
 }
 
 const handleEdit = (row: any) => {
-  ElMessage.info(`编辑生产记录: ${row.productName}`)
+  ElMessage.info(`编辑留样记录: ${row.dishName}`)
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定要删除生产记录"${row.productName}"吗?`, '提示', {
+  ElMessageBox.confirm(`确定要删除留样记录"${row.dishName}"吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +248,7 @@ const handleDelete = (row: any) => {
 </script>
 
 <style scoped>
-.production-view {
+.sample-view {
   padding: 24px;
   background: #f5f7fa;
   min-height: calc(100vh - 60px);
